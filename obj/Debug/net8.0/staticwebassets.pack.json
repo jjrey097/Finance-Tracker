@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Finance-Tracker\\FinanceTracker.Api\\wwwroot\\assets\\index-BhUPUnHo.css",
+      "PackagePath": "staticwebassets\\assets\\index-BhUPUnHo.css"
+    },
+    {
+      "Id": "C:\\Finance-Tracker\\FinanceTracker.Api\\wwwroot\\assets\\index-DemmMpnX.js",
+      "PackagePath": "staticwebassets\\assets\\index-DemmMpnX.js"
+    },
+    {
+      "Id": "C:\\Finance-Tracker\\FinanceTracker.Api\\wwwroot\\favicon.svg",
+      "PackagePath": "staticwebassets\\favicon.svg"
+    },
+    {
+      "Id": "C:\\Finance-Tracker\\FinanceTracker.Api\\wwwroot\\icons.svg",
+      "PackagePath": "staticwebassets\\icons.svg"
+    },
+    {
+      "Id": "C:\\Finance-Tracker\\FinanceTracker.Api\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.FinanceTracker.Api.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.FinanceTracker.Api.props",
+      "PackagePath": "build\\FinanceTracker.Api.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.FinanceTracker.Api.props",
+      "PackagePath": "buildMultiTargeting\\FinanceTracker.Api.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.FinanceTracker.Api.props",
+      "PackagePath": "buildTransitive\\FinanceTracker.Api.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
