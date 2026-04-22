@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using FinanceTracker.Api.Data;
 using FinanceTracker.Api.Models;
 
@@ -7,15 +9,21 @@ namespace FinanceTracker.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class TransactionsController(AppDbContext db) : ControllerBase
 {
     private static readonly string[] MonthNames =
         ["", "January", "February", "March", "April", "May", "June",
          "July", "August", "September", "October", "November", "December"];
 
+    private string UserId => User.FindFirstValue("sub") ?? "dev-user";
+
     [HttpGet]
     public async Task<IActionResult> GetAll() =>
-        Ok(await db.Transactions.OrderByDescending(t => t.Date).ToListAsync());
+        Ok(await db.Transactions
+            .Where(t => t.UserId == UserId)
+            .OrderByDescending(t => t.Date)
+            .ToListAsync());
 
     [HttpPost]
     public async Task<IActionResult> Add(Transaction t)
@@ -29,6 +37,7 @@ public class TransactionsController(AppDbContext db) : ControllerBase
         if (t.TransactionType == "Expense" && string.IsNullOrWhiteSpace(t.ExpenseCategory))
             return BadRequest("ExpenseCategory is required for Expense transactions.");
 
+        t.UserId = UserId;
         db.Transactions.Add(t);
         await db.SaveChangesAsync();
         return Ok(t);
@@ -37,7 +46,7 @@ public class TransactionsController(AppDbContext db) : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, Transaction updated)
     {
-        var t = await db.Transactions.FindAsync(id);
+        var t = await db.Transactions.FirstOrDefaultAsync(t => t.Id == id && t.UserId == UserId);
         if (t is null) return NotFound();
 
         if (string.IsNullOrWhiteSpace(updated.TransactionType))
@@ -63,22 +72,20 @@ public class TransactionsController(AppDbContext db) : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var t = await db.Transactions.FindAsync(id);
+        var t = await db.Transactions.FirstOrDefaultAsync(t => t.Id == id && t.UserId == UserId);
         if (t is null) return NotFound();
         db.Transactions.Remove(t);
         await db.SaveChangesAsync();
         return NoContent();
     }
 
-    // GET /api/transactions/annual-summary?year=2025
-    // Returns a 12-month summary table plus monthly expense breakdowns.
     [HttpGet("annual-summary")]
     public async Task<IActionResult> AnnualSummary([FromQuery] int? year)
     {
         int y = year ?? DateTime.Today.Year;
 
         var txs = await db.Transactions
-            .Where(t => t.Date.Year == y)
+            .Where(t => t.UserId == UserId && t.Date.Year == y)
             .ToListAsync();
 
         var months = Enumerable.Range(1, 12).Select(m =>

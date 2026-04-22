@@ -146,9 +146,9 @@ function fmt(n) {
 <template>
   <div>
     <!-- Header with month/year selector -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
       <h1 class="text-3xl font-bold">Transactions</h1>
-      
+
       <div class="flex items-center gap-3">
         <select v-model.number="store.selectedYear"
                 class="select select-bordered select-sm">
@@ -173,7 +173,7 @@ function fmt(n) {
           <span>{{ error }}</span>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <!-- Date -->
           <div class="form-control">
             <label class="label">

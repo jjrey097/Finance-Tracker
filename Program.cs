@@ -1,42 +1,60 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using FinanceTracker.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Services
+// Database — Supabase PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseSqlite("Data Source=finance.db"));
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Authentication — Clerk JWT in production; open when Authority is not configured (local dev)
+var clerkAuthority = builder.Configuration["Clerk:Authority"];
+
+if (!string.IsNullOrEmpty(clerkAuthority))
+{
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.Authority = clerkAuthority;
+            options.TokenValidationParameters = new()
+            {
+                ValidateAudience = false,
+                NameClaimType = "sub"
+            };
+        });
+    builder.Services.AddAuthorization();
+}
+else
+{
+    builder.Services.AddAuthentication();
+    builder.Services.AddAuthorization(options =>
+        options.DefaultPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+            .RequireAssertion(_ => true).Build());
+}
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var allowedOrigins = builder.Configuration
+    .GetSection("AllowedOrigins").Get<string[]>() ?? ["http://localhost:5173"];
+
 builder.Services.AddCors(opt =>
-    opt.AddPolicy("Dev", p =>
-        p.WithOrigins("http://localhost:5173")
+    opt.AddPolicy("App", p =>
+        p.WithOrigins(allowedOrigins)
          .AllowAnyMethod()
          .AllowAnyHeader()));
 
 var app = builder.Build();
 
-// Ensure the database schema is current. If the schema is missing or out of date
-// (e.g. after a model change), the database is automatically recreated.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    try
-    {
-        db.Database.EnsureCreated();
-        _ = db.Transactions.Count(); // verify schema is actually in place
-    }
-    catch
-    {
-        db.Database.EnsureDeleted();
-        db.Database.EnsureCreated();
-    }
+    db.Database.EnsureCreated();
 }
 
-app.UseCors("Dev");
+app.UseCors("App");
 
 if (app.Environment.IsDevelopment())
 {
@@ -44,12 +62,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Serve static files from wwwroot
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseStaticFiles();
-
 app.MapControllers();
-
-// SPA fallback - serve index.html for any non-API routes
 app.MapFallbackToFile("index.html");
 
 app.Run();

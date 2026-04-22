@@ -65,7 +65,7 @@ function remainingClass(val) {
 
 <template>
   <div>
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
       <h1 class="text-3xl font-bold">Dashboard</h1>
 
       <!-- Year + Month Selectors -->
@@ -84,7 +84,7 @@ function remainingClass(val) {
     </div>
 
     <!-- Summary Stats Cards -->
-    <div v-if="totals" class="grid grid-cols-4 gap-4 mb-8">
+    <div v-if="totals" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
       <div class="stat bg-base-200 rounded-lg p-4">
         <div class="stat-title text-sm">Income</div>
         <div class="stat-value text-2xl text-success">{{ fmt(totals.income) }}</div>
@@ -110,8 +110,8 @@ function remainingClass(val) {
           {{ selectedYear }} — {{ selectedMonth === 0 ? 'All Months' : monthNames[selectedMonth] }}
         </h2>
 
-        <div class="overflow-x-auto">
-          <table class="table table-sm w-full">
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+          <table class="table table-sm w-full min-w-[480px]">
             <thead>
               <tr class="border-b">
                 <th class="text-left">Month</th>

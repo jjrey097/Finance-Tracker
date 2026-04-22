@@ -1,0 +1,19 @@
+# .NET build output
+bin/
+obj/
+
+# Local settings with real credentials — never commit
+appsettings.Development.json
+
+# Frontend build output (built inside Docker on Railway)
+wwwroot/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.user

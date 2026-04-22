@@ -10,6 +10,7 @@
     "start": "npm run dev"
   },
   "dependencies": {
+    "@clerk/vue": "^0.1.0",
     "@vuepic/vue-datepicker": "^12.1.0",
     "axios": "^1.15.0",
     "daisyui": "^4.12.24",

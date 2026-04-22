@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 public class Transaction
 {
     public int Id { get; set; }
+    public string UserId { get; set; } = string.Empty;
     [JsonPropertyName("date")]
     public DateTime Date { get; set; } = DateTime.Today;
     [JsonPropertyName("transactionType")]
