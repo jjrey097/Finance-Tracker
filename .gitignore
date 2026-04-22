@@ -1,17 +1,21 @@
-# .NET build output
-bin/
-obj/
+# Next.js
+.next/
+out/
 
-# Local settings with real credentials — never commit
-appsettings.Development.json
+# Dependencies
+node_modules/
 
-# Frontend build output (built inside Docker on Railway)
-wwwroot/
-
-# Environment files
+# Environment files — never commit real credentials
 .env
 .env.local
 .env.*.local
+
+# Vercel
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
 
 # OS / editor
 .DS_Store

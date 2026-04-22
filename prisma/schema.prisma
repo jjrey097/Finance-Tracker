@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Transaction {
+  id              Int      @id @default(autoincrement())
+  userId          String
+  date            DateTime @db.Date
+  transactionType String
+  expenseCategory String?
+  amount          Decimal  @db.Decimal(10, 2)
+  paymentMethod   String   @default("")
+  note            String?
+
+  @@index([userId, date])
+}
+
+model Budget {
+  id           Int     @id @default(autoincrement())
+  userId       String
+  monthlyLimit Decimal @db.Decimal(10, 2)
+  month        Int
+  year         Int
+
+  @@unique([userId, month, year])
+}
